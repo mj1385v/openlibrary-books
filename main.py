@@ -1,20 +1,21 @@
 import requests
 import csv
+from typing import List , Dict
 
-BASE_URL = "https://openlibrary.org/search.json"
-OUTPUT_FILE = "books_after_2000.csv"
+BASE_URL : str= "https://openlibrary.org/search.json"
+OUTPUT_FILE : str = "books_after_2000.csv"
 
 
-def fetch_books(query="the", limit=200):
-    params = {
+def fetch_books(query : str="the", limit : int=200)-> List[str]:
+    params :Dict[str , str | int] = {
         "q": query,
         "limit": limit
     }
 
     try:
-        response = requests.get(BASE_URL, params=params, timeout=10)
+        response = requests.get(BASE_URL, params=params, timeout = 10)
         response.raise_for_status()
-        data = response.json()
+        data:Dict[str , str |int ] = response.json() 
         return data.get("docs", [])
     except requests.exceptions.RequestException as e:
         print("Error fetching data:", e)
@@ -66,7 +67,7 @@ def save_to_csv(books, filename):
 
 def main():
     print("Fetching books from Open Library...")
-    raw_books = fetch_books(query="fiction", limit=200)
+    raw_books = fetch_books(query="the", limit=200)
     print(f"Total books fetched: {len(raw_books)}")
 
     filtered_books = extract_and_filter_books(raw_books)
